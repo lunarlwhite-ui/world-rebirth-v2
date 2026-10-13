@@ -90,6 +90,7 @@
   return {...c,rank:i+1,start,end:cumulative,startPct:start/meta.coveredPopulation*100,endPct:cumulative/meta.coveredPopulation*100,share:c.population/meta.coveredPopulation*100};
  });
  const byId = new Map(countries.map(c=>[c.id,c]));
+ const luckPercent = country => Math.floor(countries.reduce((sum,c)=>sum+(c.gdp<country.gdp?c.population:0),0)/meta.coveredPopulation*10000)/100;
  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
  const STORAGE_KEY='world-rebirth-v2-progress-v1';
  const state = {percent:50,country:null,mode:'random',drawing:false,draws:0,history:[],collection:{},collectionFilter:'all',lastBatch:[],selectedDraw:null,persistent:true,drawFrame:0,mapFrame:0,focus:false,origin:'manual',camera:{s:1,x:0,y:0},point:{x:500,y:250}};
@@ -232,7 +233,7 @@
   setSelection(last.percent,{origin:'draw',announce:true});
   if(records.length===10){state.lastBatch=records;renderBatch();$('batch-section').hidden=false;}
   const places=new Set(records.map(record=>record.id)).size;
-  setText('progress-message',records.length===10?'十连抽完成：抽到 '+places+' 个不同国家，新解锁 '+discoveries+' 个。':(discoveries?'新足迹！你第一次抽中了 '+byId.get(last.id).name+'。':'再次来到 '+byId.get(last.id).name+'，已累计抽中 '+state.collection[last.id].count+' 次。'));
+  setText('progress-message',records.length===10?'十连抽完成：抽到 '+places+' 个不同国家，新解锁 '+discoveries+' 个。':(discoveries?'新足迹！你第一次投胎到了 '+byId.get(last.id).name+'。':'再次来到 '+byId.get(last.id).name+'，已累计抽中 '+state.collection[last.id].count+' 次。'));
   setText('draw-count',state.draws);renderHistory();renderCollection();saveProgress();updateBatchSelection();
  }
  function startDraw(count){
@@ -333,23 +334,26 @@
   ctx.fillStyle=color;ctx.fillText(text,x,y);return size;
  }
  function drawShareCanvas(snapshot){
-  const c=snapshot.country,canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1350;
+  const c=snapshot.country,canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1280;
   const ctx=canvas.getContext('2d');if(!ctx)throw new Error('浏览器无法创建图片画布');
-  ctx.fillStyle='#f4f1e8';ctx.fillRect(0,0,1080,1350);
-  roundedRect(ctx,27,27,1026,1296,18,null,'#cbd1bd');
+  ctx.fillStyle='#f4f1e8';ctx.fillRect(0,0,1080,1280);
+  roundedRect(ctx,27,27,1026,1226,18,null,'#cbd1bd');
   cardText(ctx,'再一次 / THE WORLD, ANOTHER WAY.',67,86,22,'#576d52');
   ctx.textAlign='right';cardText(ctx,'VOL. 02',1010,86,18,'#849278');ctx.textAlign='left';
   ctx.beginPath();ctx.moveTo(68,113);ctx.lineTo(1012,113);ctx.strokeStyle='#cbd1bd';ctx.stroke();
-  cardText(ctx,snapshot.draw?'这一次，我抽中了':'我的世界坐标',70,176,25,'#9c6845');
+  cardText(ctx,snapshot.draw?'这一次，我投胎到了':'我的世界坐标',70,176,25,'#9c6845');
   cardText(ctx,c.name,65,271,78,'#284636','serif');
   cardText(ctx,c.nameEn.toUpperCase(),70,312,22,'#7b886f','sans',930);
   roundedRect(ctx,64,354,952,225,12,'#233b30');
   cardText(ctx,meta.year+' 年名义人均 GDP',93,399,22,'#b0bea7');
   cardText(ctx,'$'+integer.format(c.gdp),88,505,88,'#e9c98d','serif',790);
   cardText(ctx,'美元 / 人 / 年',95,550,20,'#bdcbb1');
-  cardText(ctx,'该国人口',75,632,21,'#869174');cardText(ctx,'每次抽中概率',568,632,21,'#869174');
-  cardText(ctx,compactPop(c.population),74,684,39,'#34553d','serif',455);
-  cardText(ctx,probability(c.share),564,684,39,'#34553d','serif',425);
+  cardText(ctx,'该国人口',75,632,20,'#869174');
+  cardText(ctx,'每次抽中概率',401,632,20,'#869174');
+  cardText(ctx,'投胎幸运度超过了',727,632,20,'#869174');
+  cardText(ctx,compactPop(c.population),74,684,35,'#34553d','serif',280);
+  cardText(ctx,probability(c.share),400,684,35,'#34553d','serif',280);
+  cardText(ctx,pct(luckPercent(c),2)+' 人口',726,684,35,'#34553d','serif',285);
   roundedRect(ctx,64,728,952,413,10,'#243d32');
   const ox=91,oy=756,scale=.895;
   ctx.save();ctx.beginPath();ctx.rect(64,728,952,413);ctx.clip();
@@ -364,10 +368,8 @@
   cardText(ctx,'无国界陆地底图 · 参考定位点',87,1113,16,'#aabb9a');
   const detail=snapshot.draw?'第 '+snapshot.draw.number+' 抽':'候选人口百分位 '+pct(snapshot.percent,4);
   cardText(ctx,detail+'  /  已收集 '+snapshot.collected+' 个国家',71,1190,23,'#57734d');
-  cardText(ctx,'人口概率抽签 ≠ 真实出生概率 · 人均 GDP 不等于个人收入',71,1231,18,'#8c947e');
-  cardText(ctx,'世界银行 '+meta.year+' · '+countries.length+' 个会员国 · 全球人口覆盖 '+pct(meta.coverage*100,2),71,1262,17,'#8c947e');
   const site=/^https?:$/.test(location.protocol)?location.origin+location.pathname:'离线版 · 每个人一张签，每次独立抽取';
-  cardText(ctx,site,71,1296,15,'#879075','sans',930);
+  cardText(ctx,site,71,1231,15,'#879075','sans',930);
   return canvas;
  }
  async function openShareCard(){
