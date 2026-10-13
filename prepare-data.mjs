@@ -10,6 +10,7 @@ const countrySource = read('countries.json');
 const gdpSource = read('gdp.json');
 const populationSource = read('population.json');
 const geography = read('natural-earth-countries.geojson');
+const shareQR = read('share-qr.json');
 const year = '2024';
 
 // UN membership defines eligibility; administrative or territorial status is
@@ -110,7 +111,7 @@ const metadata = {
 };
 const snapshot = { meta: metadata, countries, excluded };
 fs.writeFileSync(path.join(dataDir, 'dataset.json'), JSON.stringify(snapshot, null, 2), 'utf8');
-const embedded = JSON.stringify({ ...snapshot, land: landPaths.join('') }).replace(/</g, '\\u003c');
+const embedded = JSON.stringify({ ...snapshot, land: landPaths.join(''), shareQR }).replace(/</g, '\\u003c');
 const htmlPath = path.join(root, 'index.html');
 const html = fs.readFileSync(htmlPath, 'utf8');
 const start = '<script id="embedded-data" type="application/json">';
