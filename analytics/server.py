@@ -16,6 +16,8 @@ from urllib.parse import urlsplit
 LOCAL_TIME = timezone(timedelta(hours=8))
 ID_PATTERN = re.compile(r'^[a-f0-9]{32}$')
 FIELDS = {'event_id', 'visitor_id', 'kind', 'count'}
+DRAW_BUCKETS = ((1, 1, '1 次'), (2, 5, '2–5 次'), (6, 10, '6–10 次'),
+                (11, 30, '11–30 次'), (31, 100, '31–100 次'), (101, None, '101 次及以上'))
 
 
 def validate_event(event):
@@ -94,17 +96,28 @@ class Store:
             COALESCE(SUM(CASE WHEN kind='visit' THEN units ELSE 0 END),0) AS pageviews,
             COALESCE(SUM(CASE WHEN kind='draw' THEN units ELSE 0 END),0) AS draws,
             COALESCE(SUM(CASE WHEN kind='share' THEN units ELSE 0 END),0) AS shares'''
+        distribution = [{'min': lower, 'max': upper, 'label': label, 'players': 0}
+                        for lower, upper, label in DRAW_BUCKETS]
+        bucket_case = 'CASE ' + ' '.join(
+            f'WHEN draws<={upper} THEN {index}'
+            for index, (_, upper, _) in enumerate(DRAW_BUCKETS) if upper is not None
+        ) + f' ELSE {len(DRAW_BUCKETS) - 1} END'
         with closing(self.connect()) as db:
             db.execute('BEGIN')
             total = dict(db.execute('SELECT ' + columns + ' FROM events').fetchone())
             daily = [dict(row) for row in db.execute(
                 'SELECT day,' + columns + ' FROM events WHERE day>=? GROUP BY day ORDER BY day DESC', (since,))]
             dates = db.execute('SELECT MIN(received_at),MAX(received_at) FROM events').fetchone()
+            for row in db.execute(f'''SELECT {bucket_case} AS bucket, COUNT(*) AS players
+                    FROM (SELECT SUM(units) AS draws FROM events WHERE kind='draw' GROUP BY visitor)
+                    GROUP BY bucket'''):
+                distribution[row['bucket']]['players'] = row['players']
             db.commit()
         today_counts = next((row for row in daily if row['day'] == today),
                             {'day': today, 'visitors': 0, 'players': 0, 'pageviews': 0, 'draws': 0, 'shares': 0})
         return {'totals': total, 'today': today_counts, 'daily': daily, 'timezone': 'UTC+8',
-                'day': today, 'first_event_at': dates[0], 'last_event_at': dates[1]}
+                'day': today, 'first_event_at': dates[0], 'last_event_at': dates[1],
+                'draw_distribution': distribution}
 
 
 class Limits:

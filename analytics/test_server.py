@@ -50,6 +50,33 @@ class StatisticsTests(unittest.TestCase):
         self.assertEqual(sum(recorded), 1)
         self.assertEqual(self.store.summary()['totals']['draws'], 10)
 
+    def test_draw_distribution_empty_and_nonplayers(self):
+        self.store.record(event(1, kind='visit'))
+        self.store.record(event(2, visitor=2, kind='share'))
+        distribution = self.store.summary()['draw_distribution']
+        self.assertEqual([(bucket['min'], bucket['max']) for bucket in distribution],
+                         [(1, 1), (2, 5), (6, 10), (11, 30), (31, 100), (101, None)])
+        self.assertEqual([bucket['players'] for bucket in distribution], [0] * 6)
+
+    def test_draw_distribution_boundaries_lifetime_and_retries(self):
+        totals = [1, 2, 5, 6, 10, 11, 30, 31, 100, 101, 211]
+        older = datetime(2026, 9, 1, tzinfo=timezone.utc)
+        now = datetime(2026, 10, 14, tzinfo=timezone.utc)
+        serial = 0
+        for visitor, draws in enumerate(totals, start=1):
+            tens, singles = divmod(draws, 10)
+            for units in [10] * tens + [1] * singles:
+                serial += 1
+                last = event(serial, visitor=visitor, count=units)
+                self.store.record(last, older if units == 10 else now)
+        self.assertFalse(self.store.record(last, now))
+        self.store.record(event(serial + 1, visitor=99, kind='visit'), now)
+        summary = Store(self.path, 'test-only-key').summary(now)
+        distribution = summary['draw_distribution']
+        self.assertEqual([bucket['players'] for bucket in distribution], [1, 2, 2, 2, 2, 2])
+        self.assertEqual(sum(bucket['players'] for bucket in distribution), summary['totals']['players'])
+        self.assertEqual(summary['totals']['draws'], sum(totals))
+
     def test_http_rejection_rate_limit_and_valid_flow(self):
         server = Server(('127.0.0.1', 0), self.store, 'https://game.example',
                         Path(__file__).with_name('dashboard.html'), Limits(visitor_limit=2))
