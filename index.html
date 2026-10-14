@@ -55,7 +55,7 @@
  <div class="sr-only" id="announcement" role="status" aria-live="polite" aria-atomic="true"></div>
  <section class="spectrum-section" aria-labelledby="spectrum-title"><div class="section-header"><div><span class="section-number">THE POPULATION SPECTRUM</span><h2 id="spectrum-title">把世界，排成一列。</h2><p>从较低的人均 GDP 出发，走向较高的一端。</p></div><div class="chart-key">色块越宽，<strong>人口越多</strong>。<br>色块越高，<strong>人均 GDP 越高</strong>。</div></div><div class="chart-frame" id="chart-frame"><div class="chart-topline"><span>人均 GDP · 美元 / 人 / 年（对数刻度）</span><span>横轴：累计人口百分位</span></div><svg class="spectrum" id="spectrum" role="img" aria-labelledby="chart-title chart-description"><title id="chart-title">按人均 GDP 排列的国家人口分布</title><desc id="chart-description">每个色块对应一个国家，宽度按候选人口占比计算。点击或拖动图表可选择百分位，也可使用上方滑杆。</desc><g id="chart-content"></g></svg><div id="chart-tooltip" class="chart-tooltip" role="tooltip" hidden></div></div><div class="chart-legend" id="chart-legend"></div><p class="chart-footnote" id="chart-footnote">—</p></section>
  <section class="directory" aria-labelledby="directory-title"><div class="section-header"><div><span class="section-number">EVERY COUNTRY, IN ORDER</span><h2 id="directory-title">所有候选国家</h2><p>按人均 GDP 从高到低排列。点击国家，直接定位。</p></div><div class="directory-tools"><label class="sr-only" for="country-search">搜索国家名称或代码</label><input id="country-search" class="country-search" type="search" placeholder="搜索国家名称或代码…" autocomplete="off"><span class="table-count" id="table-count">—</span></div></div><div class="table-wrap"><table class="countries-table"><thead><tr><th scope="col">序位</th><th scope="col">国家</th><th scope="col">人均 GDP / 美元</th><th scope="col">人口</th><th scope="col">抽中概率</th><th scope="col">人口百分位区间</th></tr></thead><tbody id="country-rows"></tbody></table><div class="empty-search" id="empty-search" hidden>没有找到匹配的候选国家。</div></div></section>
- <details class="methodology" id="methodology"><summary>玩法与数据说明</summary><div class="page-notes"><p>把每个人看作一张签，按所在国家的人均 GDP 排成一列。<br>选一个人口百分位，或者，让概率决定下一站。</p><div class="coverage"><span><strong id="header-year">2024</strong> 年数据</span><span><strong id="header-count">—</strong> 个国家</span><span>覆盖全球人口 <strong id="header-coverage">—</strong></span></div></div><div class="method-grid"><div><h3>01 / 谁可以进入抽签池</h3><p id="coverage-detail">—</p><p>仅纳入联合国会员国，同时要求该国拥有同一年度的人口和名义人均 GDP 数据。属地、其他地区和非会员实体不单列。未纳入人口不视作零人口，也不进入抽签分母。</p><p class="excluded" id="excluded-detail">—</p></div><div><h3>02 / 百分位如何对应国家</h3><p>将候选国按人均 GDP 由低至高排序；某国区间宽度 = 该国人口 ÷ 候选国总人口 × 100%。各国区间采用左闭右开，恰好位于公共边界时选择右侧国家；100% 对应最后一个国家。显示数字经过四舍五入，计算使用未舍入值。</p><p>百分位表示在国家平均产出序列中的人口位置，不是个人财富或收入排名。同一个国家内不区分个人收入。</p></div><div><h3>03 / 随机抽签与动画</h3><p>每次在 0–100% 上均匀抽取一个位置，再落入对应国家的人口区间。随机值来自浏览器随机数接口；抽签相互独立，允许重复。动画仅展示经过的位置，最终位置在动画前已经确定。</p><p>这是按现有人口进行的思想实验，不是按新生儿数量计算的真实出生概率。人均 GDP 是平均经济产出，不等于工资、家庭收入或生活质量。</p></div><div><h3>04 / 年份与地图</h3><p id="source-detail">—</p><p>地图为 Natural Earth 陆地轮廓，不绘制或标注国界、争议实体及争议边界。国家定位点取自世界银行首都坐标，不表示该国领土范围；仅为定位用途。</p><p>本文件内嵌数据和矢量地图。使用过程中不请求网络；下方来源链接仅在主动点击时打开。</p></div></div><div class="method-links"><a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noreferrer">世界银行 · 人均 GDP ↗</a><a href="https://data.worldbank.org/indicator/SP.POP.TOTL" target="_blank" rel="noreferrer">世界银行 · 人口 ↗</a><a href="https://www.un.org/en/about-us/member-states" target="_blank" rel="noreferrer">联合国 · 会员国 ↗</a><a href="https://www.naturalearthdata.com/" target="_blank" rel="noreferrer">Natural Earth · 地图 ↗</a></div></details>
+ <details class="methodology" id="methodology"><summary>玩法与数据说明</summary><div class="page-notes"><p id="analytics-note" hidden>本站使用随机浏览器标识统计访问、抽签和分享卡生成次数，不上传收集册内容。清除浏览器数据或更换设备可能重复计数。</p><p>把每个人看作一张签，按所在国家的人均 GDP 排成一列。<br>选一个人口百分位，或者，让概率决定下一站。</p><div class="coverage"><span><strong id="header-year">2024</strong> 年数据</span><span><strong id="header-count">—</strong> 个国家</span><span>覆盖全球人口 <strong id="header-coverage">—</strong></span></div></div><div class="method-grid"><div><h3>01 / 谁可以进入抽签池</h3><p id="coverage-detail">—</p><p>仅纳入联合国会员国，同时要求该国拥有同一年度的人口和名义人均 GDP 数据。属地、其他地区和非会员实体不单列。未纳入人口不视作零人口，也不进入抽签分母。</p><p class="excluded" id="excluded-detail">—</p></div><div><h3>02 / 百分位如何对应国家</h3><p>将候选国按人均 GDP 由低至高排序；某国区间宽度 = 该国人口 ÷ 候选国总人口 × 100%。各国区间采用左闭右开，恰好位于公共边界时选择右侧国家；100% 对应最后一个国家。显示数字经过四舍五入，计算使用未舍入值。</p><p>百分位表示在国家平均产出序列中的人口位置，不是个人财富或收入排名。同一个国家内不区分个人收入。</p></div><div><h3>03 / 随机抽签与动画</h3><p>每次在 0–100% 上均匀抽取一个位置，再落入对应国家的人口区间。随机值来自浏览器随机数接口；抽签相互独立，允许重复。动画仅展示经过的位置，最终位置在动画前已经确定。</p><p>这是按现有人口进行的思想实验，不是按新生儿数量计算的真实出生概率。人均 GDP 是平均经济产出，不等于工资、家庭收入或生活质量。</p></div><div><h3>04 / 年份与地图</h3><p id="source-detail">—</p><p>地图为 Natural Earth 陆地轮廓，不绘制或标注国界、争议实体及争议边界。国家定位点取自世界银行首都坐标，不表示该国领土范围；仅为定位用途。</p><p>本文件内嵌数据和矢量地图，游戏可离线使用。服务器版联网时会发送匿名使用统计；下方来源链接仅在主动点击时打开。</p></div></div><div class="method-links"><a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noreferrer">世界银行 · 人均 GDP ↗</a><a href="https://data.worldbank.org/indicator/SP.POP.TOTL" target="_blank" rel="noreferrer">世界银行 · 人口 ↗</a><a href="https://www.un.org/en/about-us/member-states" target="_blank" rel="noreferrer">联合国 · 会员国 ↗</a><a href="https://www.naturalearthdata.com/" target="_blank" rel="noreferrer">Natural Earth · 地图 ↗</a></div></details>
  <noscript><p class="fatal">请在支持 JavaScript 的浏览器中打开此文件，才能使用滑杆、抽签和地图联动。</p></noscript>
  <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-dialog-title"><div class="share-dialog-header"><h2 id="share-dialog-title">把这一站，带给朋友。</h2><button class="share-close" id="share-close" type="button" aria-label="关闭分享卡">×</button></div><div class="share-preview-wrap"><img class="share-preview" id="share-preview" alt="当前国家的人口抽签分享卡" hidden></div><p class="share-status" id="share-status" role="status">正在生成分享卡…</p><div class="share-dialog-actions"><a class="save-card" id="save-card" aria-disabled="true">保存 PNG 图片</a><button class="system-share" id="system-share" type="button" hidden>系统分享</button></div><p class="share-card-source" id="share-card-source"></p></dialog>
 </main>
@@ -69,6 +69,32 @@
  try {
  const DATA = JSON.parse($('embedded-data').textContent);
  const meta = DATA.meta;
+ const reportEvent=(()=>{
+  const endpoint=meta.analytics_endpoint;
+  if(!endpoint)return ()=>{};
+  const note=document.getElementById('analytics-note');if(note)note.hidden=false;
+  if(!globalThis.crypto||!crypto.getRandomValues){console.warn('游玩统计未启用：浏览器缺少随机标识支持。');return ()=>{};}
+  const id=()=>Array.from(crypto.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,'0')).join('');
+  let visitor=id();
+  try{const saved=localStorage.getItem('world-rebirth-analytics-id-v1');if(saved&&/^[a-f0-9]{32}$/.test(saved))visitor=saved;else localStorage.setItem('world-rebirth-analytics-id-v1',visitor);}
+  catch(error){console.warn('统计标识仅在本次页面中有效，重新打开可能重复计数。');}
+  return (kind,count=1)=>{
+   const payload=JSON.stringify({event_id:id(),visitor_id:visitor,kind,count});
+   const send=async attempt=>{
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),4000);
+    try{
+     const response=await fetch(endpoint,{method:'POST',mode:'same-origin',credentials:'omit',headers:{'Content-Type':'application/json'},body:payload,keepalive:true,signal:controller.signal});
+     if(response.ok)return;
+     if(response.status<500){console.warn('统计未记录，接口返回：',response.status);return;}
+     throw new Error('HTTP '+response.status);
+    }catch(error){
+     if(attempt===0){setTimeout(()=>send(1),1200);return;}
+     console.warn('统计上报失败，本次事件可能未计入：',error.message);
+    }finally{clearTimeout(timer);}
+   };
+   send(0);
+  };
+ })();
  const REGION = {
   EAS:{name:'东亚与太平洋',color:'#648b76'},
   SAS:{name:'南亚',color:'#af995a'},
@@ -234,7 +260,7 @@
   if(records.length===10){state.lastBatch=records;renderBatch();$('batch-section').hidden=false;}
   const places=new Set(records.map(record=>record.id)).size;
   setText('progress-message',records.length===10?'十连抽完成：抽到 '+places+' 个不同国家，新解锁 '+discoveries+' 个。':(discoveries?'新足迹！你第一次投胎到了 '+byId.get(last.id).name+'。':'再次来到 '+byId.get(last.id).name+'，已累计抽中 '+state.collection[last.id].count+' 次。'));
-  setText('draw-count',state.draws);renderHistory();renderCollection();saveProgress();updateBatchSelection();
+  setText('draw-count',state.draws);renderHistory();renderCollection();saveProgress();updateBatchSelection();reportEvent('draw',targets.length);
  }
  function startDraw(count){
   if(state.drawing)return;
@@ -398,6 +424,7 @@
    $('share-preview').src=shareURL;$('share-preview').alt=snapshot.country.name+'分享卡：人均 GDP '+integer.format(snapshot.country.gdp)+' 美元，抽中概率 '+probability(snapshot.country.share);$('share-preview').hidden=false;
    $('save-card').href=shareURL;$('save-card').download=filename;$('save-card').removeAttribute('aria-disabled');
    setText('share-status','分享卡已生成。保存图片即可发给朋友；也可以长按图片保存。');
+   reportEvent('share');
    if(navigator.canShare&&navigator.share){try{$('system-share').hidden=!navigator.canShare({files:[shareFile]});}catch(error){$('system-share').hidden=true;}}
   }catch(error){if(generation===shareGeneration)setText('share-status','分享卡生成失败：'+error.message+'。可以关闭后重试。');}
  }
@@ -466,7 +493,7 @@
  svg.addEventListener('pointerleave',()=>{$('chart-tooltip').hidden=true;const hover=$('chart-hover-line');if(hover)hover.setAttribute('hidden','');});
  let resizeFrame=0;
  if(typeof ResizeObserver==='function'){new ResizeObserver(()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(buildChart);}).observe(svg);}else window.addEventListener('resize',buildChart);
- loadProgress();setText('draw-count',state.draws);renderHistory();renderCollection();renderTable();setMode(state.mode);setSelection(50,{origin:'manual',animateMap:false});buildChart();
+ loadProgress();setText('draw-count',state.draws);renderHistory();renderCollection();renderTable();setMode(state.mode);setSelection(50,{origin:'manual',animateMap:false});buildChart();reportEvent('visit');
  } catch(error) {
   const message=document.getElementById('fatal');message.hidden=false;message.textContent='页面数据或初始化发生错误，交互尚未就绪：'+error.message;
  }
