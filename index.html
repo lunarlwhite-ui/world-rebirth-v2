@@ -327,10 +327,10 @@
   ctx.beginPath();ctx.moveTo(x+radius,y);ctx.lineTo(x+width-radius,y);ctx.quadraticCurveTo(x+width,y,x+width,y+radius);ctx.lineTo(x+width,y+height-radius);ctx.quadraticCurveTo(x+width,y+height,x+width-radius,y+height);ctx.lineTo(x+radius,y+height);ctx.quadraticCurveTo(x,y+height,x,y+height-radius);ctx.lineTo(x,y+radius);ctx.quadraticCurveTo(x,y,x+radius,y);ctx.closePath();
   if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke();}
  }
- function cardText(ctx,text,x,y,size,color,font='sans',maxWidth=930){
+ function cardText(ctx,text,x,y,size,color,font='sans',maxWidth=930,weight=400){
   const family=font==='serif'?'"Palatino Linotype", "Songti SC", "SimSun", serif':'"Trebuchet MS", "Microsoft YaHei", "PingFang SC", sans-serif';
-  ctx.font=size+'px '+family;
-  while(ctx.measureText(text).width>maxWidth&&size>15){size--;ctx.font=size+'px '+family;}
+  ctx.font=weight+' '+size+'px '+family;
+  while(ctx.measureText(text).width>maxWidth&&size>15){size--;ctx.font=weight+' '+size+'px '+family;}
   ctx.fillStyle=color;ctx.fillText(text,x,y);return size;
  }
  function drawShareCanvas(snapshot){
@@ -338,7 +338,9 @@
   const ctx=canvas.getContext('2d');if(!ctx)throw new Error('浏览器无法创建图片画布');
   ctx.fillStyle='#f4f1e8';ctx.fillRect(0,0,1080,1280);
   roundedRect(ctx,27,27,1026,1226,18,null,'#cbd1bd');
-  cardText(ctx,'再一次 / THE WORLD, ANOTHER WAY.',67,86,22,'#576d52');
+  cardText(ctx,'投胎抽签机',67,86,22,'#576d52','sans',930,700);
+  const taglineX=67+ctx.measureText('投胎抽签机').width+12;
+  cardText(ctx,'/ THE WORLD, ANOTHER WAY.',taglineX,86,22,'#576d52');
   ctx.textAlign='right';cardText(ctx,'VOL. 02',1010,86,18,'#849278');ctx.textAlign='left';
   ctx.beginPath();ctx.moveTo(68,113);ctx.lineTo(1012,113);ctx.strokeStyle='#cbd1bd';ctx.stroke();
   cardText(ctx,snapshot.draw?'这一次，我投胎到了':'我的世界坐标',70,176,25,'#9c6845');
